@@ -94,3 +94,15 @@ func TestUser(t *testing.T) {
 	t.Log(u.GetByName("Alex"))
 	t.Log(u.GetByLastName("Oldman"))
 }
+
+func TestIndex_Search(t *testing.T) {
+	u := New()
+	for _, tc := range TC {
+		u.Add(tc)
+	}
+	users := u.Search(
+		FilterIDGTE(1),
+		FilterNameEq("Alex"),
+	)
+	t.Log(users)
+}

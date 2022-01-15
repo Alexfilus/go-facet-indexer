@@ -1,6 +1,8 @@
 package user
 
-import gofacetindexer "go-facet-indexer"
+import (
+	gofacetindexer "go-facet-indexer"
+)
 
 type Index struct {
 	collection   []User
@@ -31,25 +33,31 @@ func (i *Index) Add(user User) {
 }
 
 func (i *Index) GetByID(val int64) []User {
-	idxSlice := i.idxID.FindEqual(val)
-	res := make([]User, len(idxSlice))
-	for iter, idx := range idxSlice {
-		res[iter] = i.collection[idx]
-	}
-	return res
+	return i.collect(i.idxID.FindEqual(val))
 }
 
 func (i *Index) GetByName(val string) []User {
-	idxSlice := i.idxName.Find(val)
-	res := make([]User, len(idxSlice))
-	for iter, idx := range idxSlice {
-		res[iter] = i.collection[idx]
-	}
-	return res
+	return i.collect(i.idxName.Find(val))
 }
 
 func (i *Index) GetByLastName(val string) []User {
-	idxSlice := i.idxLastName.Find(val)
+	return i.collect(i.idxLastName.Find(val))
+}
+
+func (i *Index) WhereIDGTE(val int64) []User {
+	return i.collect(i.idxID.FindGTE(val))
+}
+
+func (i *Index) Search(filters ...Filter) []User {
+	idsFiltered := make([][]int, len(filters))
+	for iter, f := range filters {
+		idsFiltered[iter] = f(i)
+	}
+	ids := gofacetindexer.Intersect(idsFiltered...)
+	return i.collect(ids)
+}
+
+func (i *Index) collect(idxSlice []int) []User {
 	res := make([]User, len(idxSlice))
 	for iter, idx := range idxSlice {
 		res[iter] = i.collection[idx]

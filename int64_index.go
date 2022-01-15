@@ -84,15 +84,14 @@ func (i *Int64) FindLTE(val int64) (res []int) {
 }
 
 func (i *Int64) FindRange(low, high int64) (res []int) {
+	if low > high {
+		return
+	}
 	idxLow, _ := i.search(low)
 	if idxLow == -1 {
-		return []int{}
+		return
 	}
-	idxHigh, _ := i.search(high)
-	if idxHigh == -1 {
-		return []int{}
-	}
-	for iter := idxLow; iter <= idxHigh; iter++ {
+	for iter := idxLow; i.k[iter] <= high; iter++ {
 		res = append(res, i.v[iter]...)
 	}
 	return res

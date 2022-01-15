@@ -7,3 +7,9 @@ func FilterNameEq(val string) Filter {
 		return i.idxName.Find(val)
 	}
 }
+
+func FilterIDGTE(val int64) Filter {
+	return func(i *Index) []int {
+		return i.idxID.FindGTE(val)
+	}
+}
