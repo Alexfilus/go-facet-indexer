@@ -111,6 +111,25 @@ func (i *Int64) SortDesc() []int {
 	return res
 }
 
+func (i *Int64) Count() int {
+	return len(i.k)
+}
+
+func (i *Int64) Min() int64 {
+	return i.k[0]
+}
+
+func (i *Int64) Max() int64 {
+	return i.k[len(i.k)-1]
+}
+
+func (i *Int64) Sum() (res int64) {
+	for _, val := range i.k {
+		res += val
+	}
+	return
+}
+
 func (i *Int64) search(target int64) (int, int) {
 	start := 0
 	end := len(i.k) - 1

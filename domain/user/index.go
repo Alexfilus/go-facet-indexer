@@ -62,6 +62,10 @@ func (i *Index) Search() *Search {
 	}
 }
 
+func (i *Index) Len() int {
+	return len(i.collection)
+}
+
 func (i *Index) collect(idxSlice []int) []User {
 	res := make([]User, len(idxSlice))
 	for iter, idx := range idxSlice {
