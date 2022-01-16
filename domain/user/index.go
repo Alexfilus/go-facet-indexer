@@ -48,13 +48,18 @@ func (i *Index) WhereIDGTE(val int64) []User {
 	return i.collect(i.idxID.FindGTE(val))
 }
 
-func (i *Index) Search(filters ...Filter) []User {
-	idsFiltered := make([][]int, len(filters))
-	for iter, f := range filters {
-		idsFiltered[iter] = f(i)
+func (i *Index) SortByIDAsc() []User {
+	return i.collect(i.idxID.SortAsc())
+}
+
+func (i *Index) SortByIDDesc() []User {
+	return i.collect(i.idxID.SortDesc())
+}
+
+func (i *Index) Search() *Search {
+	return &Search{
+		i: i,
 	}
-	ids := gofacetindexer.Intersect(idsFiltered...)
-	return i.collect(ids)
 }
 
 func (i *Index) collect(idxSlice []int) []User {

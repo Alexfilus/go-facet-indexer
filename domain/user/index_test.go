@@ -1,6 +1,7 @@
 package user
 
 import (
+	"os"
 	"testing"
 	"time"
 )
@@ -85,24 +86,37 @@ var TC = []User{
 	},
 }
 
-func TestUser(t *testing.T) {
-	u := New()
+var u = New()
+
+func TestMain(m *testing.M) {
 	for _, tc := range TC {
 		u.Add(tc)
 	}
+	os.Exit(m.Run())
+}
+func TestUser(t *testing.T) {
 	t.Log(u.GetByID(9))
 	t.Log(u.GetByName("Alex"))
 	t.Log(u.GetByLastName("Oldman"))
 }
 
 func TestIndex_Search(t *testing.T) {
-	u := New()
-	for _, tc := range TC {
-		u.Add(tc)
-	}
-	users := u.Search(
-		FilterIDGTE(1),
-		FilterNameEq("Alex"),
-	)
-	t.Log(users)
+	users1 := u.Search().
+		WithFilter(FilterIDGTE(1)).
+		WithFilter(FilterNameEq("Alex")).
+		WithSort(SortByIDDesc()).
+		Do()
+	t.Log(users1)
+
+	users2 := u.Search().
+		WithFilter(FilterIDRange(3, 8)).
+		WithFilter(FilterNameEq("Alex")).
+		WithSort(SortByIDDesc()).
+		Do()
+	t.Log(users2)
+}
+
+func TestIndex_SortByIDDesc(t *testing.T) {
+	users1 := u.SortByIDDesc()
+	t.Log(users1)
 }

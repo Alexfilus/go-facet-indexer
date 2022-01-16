@@ -24,8 +24,8 @@ func (i *Int64) Add(val int64, index int) {
 			i.v = append(i.v, []int{index})
 			return
 		}
-		i.k = append(i.k[0:pos], append([]int64{val}, i.k[pos:]...)...)
-		i.v = append(i.v[0:pos], append([][]int{{index}}, i.v[pos:]...)...)
+		i.k = append(i.k[:pos], append([]int64{val}, i.k[pos:]...)...)
+		i.v = append(i.v[:pos], append([][]int{{index}}, i.v[pos:]...)...)
 		return
 	}
 	i.v[idx] = append(i.v[idx], index)
@@ -94,6 +94,20 @@ func (i *Int64) FindRange(low, high int64) (res []int) {
 	for iter := idxLow; i.k[iter] <= high; iter++ {
 		res = append(res, i.v[iter]...)
 	}
+	return res
+}
+
+func (i *Int64) SortAsc() []int {
+	res := make([]int, 0, len(i.v))
+	for _, v := range i.v {
+		res = append(res, v...)
+	}
+	return res
+}
+
+func (i *Int64) SortDesc() []int {
+	res := i.SortAsc()
+	Invert(res)
 	return res
 }
 
